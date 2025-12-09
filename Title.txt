@@ -1,0 +1,10 @@
+client_management_app/
+├── lib/
+│   ├── main.dart
+│   ├── database_helper.dart
+│   ├── client_model.dart
+│   ├── main_screen.dart
+│   ├── client_detail_screen.dart
+│   └── add_transaction_screen.dart
+├── pubspec.yaml
+└── assets/
