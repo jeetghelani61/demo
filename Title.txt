@@ -8,3 +8,9 @@ client_management_app/
 │   └── add_transaction_screen.dart
 ├── pubspec.yaml
 └── assets/
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
