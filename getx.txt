@@ -1,0 +1,132 @@
+🔹 What is GetX?
+
+GetX is a Flutter package used for:
+
+State Management
+
+Navigation
+
+Dependency Injection
+
+👉 It is fast, lightweight, and easy compared to Provider / Bloc.
+
+🔹 Step 1: Add Dependency
+
+In pubspec.yaml:
+
+dependencies:
+  get: ^4.6.6
+
+🔹 Step 2: Basic Counter App using GetX
+📁 Controller (Logic Part)
+
+Create a file: counter_controller.dart
+
+import 'package:get/get.dart';
+
+class CounterController extends GetxController {
+  var count = 0.obs; // observable variable
+
+  void increment() {
+    count++;
+  }
+
+  void decrement() {
+    count--;
+  }
+}
+
+🔍 Explanation
+Code	Meaning
+GetxController	Controller class for GetX
+.obs	Makes variable observable
+count++	Automatically updates UI
+🔹 Step 3: Main File Setup
+main.dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'counter_controller.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(   // instead of MaterialApp
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    );
+  }
+}
+
+🔹 Step 4: UI File
+home_page.dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'counter_controller.dart';
+
+class HomePage extends StatelessWidget {
+
+  final CounterController controller =
+      Get.put(CounterController()); // dependency injection
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("GetX Counter")),
+      body: Center(
+        child: Obx(() => Text(
+          "Count: ${controller.count}",
+          style: TextStyle(fontSize: 30),
+        )),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: controller.increment,
+            child: Icon(Icons.add),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: controller.decrement,
+            child: Icon(Icons.remove),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+🔍 UI Explanation
+Widget	Purpose
+Get.put()	Create & store controller
+Obx()	Auto UI update on change
+controller.count	Access observable value
+No setState()	GetX handles updates
+🔹 Output
+
+✔ Click ➕ → Count increases
+✔ Click ➖ → Count decreases
+✔ No setState() needed 🚀
+
+🔹 GetX Navigation Example (Extra)
+Get.to(SecondPage());     // Navigate
+Get.back();               // Go back
+Get.offAll(HomePage());   // Clear all routes
+
+🔹 GetX Snackbar Example
+Get.snackbar(
+  "Success",
+  "Data Saved Successfully",
+  snackPosition: SnackPosition.BOTTOM,
+);
+
+🔹 Why Use GetX?
+
+✔ Less boilerplate
+✔ Fast performance
+✔ Clean code
+✔ No context required
