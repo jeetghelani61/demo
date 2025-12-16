@@ -15,6 +15,8 @@ dependencies:
     sdk: flutter
   http: ^1.2.0
 
+https://pub.dev/packages/get
+
 https://blog.logrocket.com/ultimate-guide-getx-state-management-flutter/
 
 https://www.google.com/search?q=free+flutter+course+beginner+to+advance&rlz=1C1GCEB_enIN1192IN1192&oq=free+flutter+course+bigginer+to+ad&gs_lcrp=EgZjaHJvbWUqCQgCECEYChigATIGCAAQRRg5MgkIARAhGAoYoAEyCQgCECEYChigATIJCAMQIRgKGKABMgcIBBAhGI8CMgcIBRAhGI8C0gEJMzE3OTNqMGo3qAIIsAIB8QWttw7XZSZKpg&sourceid=chrome&ie=UTF-8#fpstate=ive&vld=cid:f815be26,vid:TclK5gNM_PM,st:0
