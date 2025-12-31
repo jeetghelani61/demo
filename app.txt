@@ -1,0 +1,337 @@
+📦 pubspec.yaml
+name: kids_animal_app
+description: Kids Animal Learning App
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.2.2
+  cached_network_image: ^3.3.1
+  audioplayers: ^5.2.1
+  video_player: ^2.8.2
+
+📁 lib/main.dart
+import 'package:flutter/material.dart';
+import 'screens/splash_screen.dart';
+import 'theme.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: appTheme,
+      home: SplashScreen(),
+    );
+  }
+}
+
+🎨 lib/theme.dart
+import 'package:flutter/material.dart';
+
+ThemeData appTheme = ThemeData(
+  primaryColor: const Color.fromRGBO(255, 120, 0, 1),
+  scaffoldBackgroundColor: const Color.fromRGBO(245, 245, 245, 1),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color.fromRGBO(255, 120, 0, 1),
+    foregroundColor: Colors.white,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromRGBO(0, 180, 255, 1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+  ),
+);
+
+🐾 lib/models/animal.dart
+class Animal {
+  final String name;
+  final String image;
+  final String sound;
+  final String video;
+  final String desc;
+
+  Animal({
+    required this.name,
+    required this.image,
+    required this.sound,
+    required this.video,
+    required this.desc,
+  });
+}
+
+🐘 lib/data/animal_data.dart
+
+(Example – you can add 50 animals same way)
+
+import '../models/animal.dart';
+
+List<Animal> animals = [
+  Animal(
+    name: "Lion",
+    image: "https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg",
+    sound: "https://www.soundjay.com/animal/lion-roar-01.mp3",
+    video: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
+    desc: "Lion is the king of jungle.",
+  ),
+  Animal(
+    name: "Elephant",
+    image: "https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg",
+    sound: "https://www.soundjay.com/animal/elephant-trumpet.mp3",
+    video: "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4",
+    desc: "Elephant is the biggest land animal.",
+  ),
+];
+
+🌟 lib/screens/splash_screen.dart
+import 'package:flutter/material.dart';
+import 'onboarding_screen.dart';
+
+class SplashScreen extends StatefulWidget {
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => OnboardingScreen()),
+      );
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          "🐾 Kids Animal App",
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+📘 lib/screens/onboarding_screen.dart
+import 'package:flutter/material.dart';
+import 'user_info_screen.dart';
+
+class OnboardingScreen extends StatelessWidget {
+  Widget page(String title) {
+    return Center(
+      child: Text(title, style: const TextStyle(fontSize: 26)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: PageView(
+        children: [
+          page("Learn Animals 🐶"),
+          page("Watch Videos 🎥"),
+          page("Play Games 🎮"),
+        ],
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => UserInfoScreen()),
+          );
+        },
+        child: const Text("Start"),
+      ),
+    );
+  }
+}
+
+👶 lib/screens/user_info_screen.dart
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home_screen.dart';
+
+class UserInfoScreen extends StatefulWidget {
+  @override
+  State<UserInfoScreen> createState() => _UserInfoScreenState();
+}
+
+class _UserInfoScreenState extends State<UserInfoScreen> {
+  final nameCtrl = TextEditingController();
+  final dobCtrl = TextEditingController();
+
+  Future<void> saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("name", nameCtrl.text);
+    prefs.setString("dob", dobCtrl.text);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => HomeScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Your Info")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: "Name")),
+            TextField(controller: dobCtrl, decoration: const InputDecoration(labelText: "DOB")),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: saveData, child: const Text("Continue")),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+🏠 lib/screens/home_screen.dart
+import 'package:flutter/material.dart';
+import '../data/animal_data.dart';
+import 'animal_detail_screen.dart';
+import 'game_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Animals"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.games),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => GameScreen()));
+            },
+          )
+        ],
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(10),
+        itemCount: animals.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        itemBuilder: (context, i) {
+          final a = animals[i];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => AnimalDetailScreen(animal: a),
+              ));
+            },
+            child: Card(
+              elevation: 6,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: CachedNetworkImage(imageUrl: a.image, fit: BoxFit.cover),
+                  ),
+                  Text(a.name, style: const TextStyle(fontSize: 18)),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+🔊 lib/screens/animal_detail_screen.dart
+import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:video_player/video_player.dart';
+import '../models/animal.dart';
+
+class AnimalDetailScreen extends StatefulWidget {
+  final Animal animal;
+  const AnimalDetailScreen({required this.animal});
+
+  @override
+  State<AnimalDetailScreen> createState() => _AnimalDetailScreenState();
+}
+
+class _AnimalDetailScreenState extends State<AnimalDetailScreen> {
+  late VideoPlayerController controller;
+  final player = AudioPlayer();
+
+  @override
+  void initState() {
+    controller = VideoPlayerController.network(widget.animal.video)
+      ..initialize().then((_) => setState(() {}));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    player.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.animal.name)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Image.network(widget.animal.image),
+            Text(widget.animal.desc),
+            ElevatedButton(
+              onPressed: () => player.play(UrlSource(widget.animal.sound)),
+              child: const Text("Play Sound"),
+            ),
+            if (controller.value.isInitialized)
+              AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: VideoPlayer(controller),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+🎮 lib/screens/game_screen.dart
+import 'package:flutter/material.dart';
+
+class GameScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Animal Game")),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {},
+          child: const Text("Start Game 🎮"),
+        ),
+      ),
+    );
+  }
+}
